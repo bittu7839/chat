@@ -26,9 +26,6 @@
             </header>
             <div class="chat-box"></div>
             <form action="#" class="typing-area">
-                <audio controls>
-                    <source src="" type="audio/webm">
-                </audio>
                 <div class="mic-area">
                     <i class="fas fa-microphone mic"></i>
                 </div>

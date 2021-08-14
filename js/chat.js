@@ -7,6 +7,25 @@ form.onsubmit = (e) => {
     e.preventDefault(); //preventing form from submitting
 }
 
+var showChat = () => {
+    // let's start ajax
+    let xhr = new XMLHttpRequest(); //Create XML object
+    xhr.open("POST", "controller/get-chat.php");
+    xhr.onload = () => {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+            if (xhr.status == 200) {
+                let data = xhr.response;
+                chatBox.innerHTML = data;
+                if (!chatBox.classList.contains('active')) {
+                    scrollToButtom();
+                }
+            }
+        }
+    }
+    let formData = new FormData(form); // Creating new formData object
+    xhr.send(formData); // sending the form data to php
+}
+showChat();
 sendBtn.onclick = () => {
     // let's start ajax
     let xhr = new XMLHttpRequest(); //Create XML object
@@ -14,7 +33,8 @@ sendBtn.onclick = () => {
     xhr.onload = () => {
             if (xhr.readyState === XMLHttpRequest.DONE) {
                 if (xhr.status == 200) {
-                    // let data = xhr.response;
+                    let data = xhr.response;
+                    chatBox.innerHTML = data;
                     inputField.value = "";
                     scrollToButtom();
                 }
@@ -44,23 +64,8 @@ chatBox.touchend = () => {
 }
 
 setInterval(() => {
-    // let's start ajax
-    let xhr = new XMLHttpRequest(); //Create XML object
-    xhr.open("POST", "controller/get-chat.php");
-    xhr.onload = () => {
-        if (xhr.readyState === XMLHttpRequest.DONE) {
-            if (xhr.status == 200) {
-                let data = xhr.response;
-                chatBox.innerHTML = data;
-                if (!chatBox.classList.contains('active')) {
-                    scrollToButtom();
-                }
-            }
-        }
-    }
-    let formData = new FormData(form); // Creating new formData object
-    xhr.send(formData); // sending the form data to php
-}, 500); // Function will be run after 500ms
+    showChat();
+}, 50000); // Function will be run after 500ms
 
 function scrollToButtom() {
     chatBox.scrollTop = chatBox.scrollHeight;

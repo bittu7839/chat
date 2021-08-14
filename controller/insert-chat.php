@@ -1,12 +1,23 @@
 <?php
     session_start();
+    $base_url = ((isset ( $_SERVER ['HTTPS'] ) && $_SERVER ['HTTPS'] == "on") ? "https" : "http");
+    $base_url .= "://" . $_SERVER ['HTTP_HOST'];
+
     if(isset($_SESSION['user_id'])){
         include_once "config.php";
         $outgoing_id = mysqli_real_escape_string($conn, $_POST['outgoing_id']);
         $incoming_id = mysqli_real_escape_string($conn, $_POST['incoming_id']);
         $message = mysqli_real_escape_string($conn, $_POST['message']);
         $type = mysqli_real_escape_string($conn, $_POST['type']);
-
+        if($type == "audio"){
+            $input = $_FILES['audio_data']['tmp_name']; //temporary name that PHP gave to the uploaded file
+            $output = $_FILES['audio_data']['name'].".webm"; //letting the client control the filename is a rather bad idea
+        
+            //move the file from temp name to local folder using $output name
+            move_uploaded_file($input,'../audio/'. $output);
+            $message = $base_url.'/chat/audio/'.$output;
+        }
+        
         if(!empty($message)){
             $sql = mysqli_query($conn, "INSERT INTO messages(`outgoing_msg_id`, `incoming_msg_id`, `msg`, `type`) 
                          VALUES ('{$outgoing_id}','{$incoming_id}','{$message}', '{$type}')");
